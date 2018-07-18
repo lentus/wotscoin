@@ -3,7 +3,7 @@ package wotsp
 import (
 	"testing"
 	"bytes"
-	"github.com/Re0h/wotsp/testdata"
+	"github.com/Re0h/xnyss/wotsp/testdata"
 	"crypto/rand"
 )
 
@@ -82,10 +82,12 @@ func TestAll(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	pubKey := GenPublicKey(seed, pubSeed, &Address{})
-	signed := Sign(msg, seed, pubSeed, &Address{})
+	adrs := new(Address)
 
-	if !Verify(pubKey, signed, msg, pubSeed, &Address{}) {
+	pubKey := GenPublicKey(seed, pubSeed, adrs)
+	signed := Sign(msg, seed, pubSeed, adrs)
+
+	if !Verify(pubKey, signed, msg, pubSeed, adrs) {
 		t.Fail()
 	}
 }

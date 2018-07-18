@@ -5,7 +5,7 @@ import (
 	"crypto/sha256"
 	"testing"
 	"fmt"
-	wotsp "github.com/lentus/wotscoin/lib/xnyss/wotsp256"
+	wotsp "github.com/Re0h/xnyss/wotsp256"
 	"bytes"
 )
 

@@ -1,7 +1,7 @@
 package xnyss
 
 import (
-	wotsp "github.com/lentus/wotscoin/lib/xnyss/wotsp256"
+	wotsp "github.com/Re0h/xnyss/wotsp256"
 	"crypto/sha256"
 	"errors"
 	"bytes"

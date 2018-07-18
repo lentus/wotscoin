@@ -1,8 +1,9 @@
-// Implements the eXtended Naor-Yung Signature Scheme (XNYSS).
+// Implements the eXtended Naor-Yung Signature Scheme (XNYSS). Note that the
+// NYTree struct is not thread safe.
 package xnyss
 
 import (
-	wotsp "github.com/lentus/wotscoin/lib/xnyss/wotsp256"
+	wotsp "github.com/Re0h/xnyss/wotsp256"
 	"errors"
 	"bytes"
 	"crypto/sha256"
@@ -34,7 +35,6 @@ type NYTree struct {
 	rootSeed    []byte
 	rootPubSeed []byte
 	ots         bool
-	// TODO make thread safe by using a mutex
 }
 
 // Creates a new Naor-Yung chain tree using the given secret and public seeds.
@@ -135,7 +135,6 @@ func (t *NYTree) Sign(msg, txid []byte) (*Signature, error) {
 }
 
 // Returns a list of public key hashes of unconfirmed nodes present in the tree.
-// TODO make thread safe
 func (t *NYTree) Unconfirmed() (pkhashes [][]byte) {
 	idxs := make([]int, 0, len(t.nodes))
 	for idx, node := range t.nodes {
@@ -168,9 +167,6 @@ func (t *NYTree) Unconfirmed() (pkhashes [][]byte) {
 // acceptable tradeoff. An ameliorating factor is that when we are confirming a
 // batch of nodes, the performance of this function will improve after every
 // call since each time an additional node will be confirmed.
-//
-// TODO test whether confirming many nodes has reasonable performance
-// TODO make thread safe
 func (t *NYTree) Confirm(pkh []byte, confirms uint8) {
 	for _, node := range t.nodes {
 		if node.confirms >= ConfirmsRequired {
@@ -244,7 +240,6 @@ func (t *NYTree) Backup(count int) (*NYTree, error) {
 }
 
 // Wipes secret data.
-// TODO make thread safe
 func (t *NYTree) Wipe() {
 	for _, node := range t.nodes {
 		node.wipe()
@@ -255,8 +250,7 @@ func (t *NYTree) Wipe() {
 	}
 }
 
-// Returns the byte representation of the tree t.
-// TODO make thread safe
+// Returns a byte representation of the tree t.
 func (t *NYTree) Bytes() []byte {
 	buf := &bytes.Buffer{}
 
@@ -276,7 +270,7 @@ func (t *NYTree) Bytes() []byte {
 	return buf.Bytes()
 }
 
-// Loads an existing Naor-Yung chain tree.
+// Loads an existing Naor-Yung chain tree from bytes.
 func Load(b []byte) (*NYTree, error) {
 	if len(b) < 65 {
 		return nil, ErrTreeInvalidInput

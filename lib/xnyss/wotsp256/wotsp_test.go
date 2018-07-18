@@ -3,7 +3,7 @@ package wotsp256
 import (
 	"testing"
 	"crypto/rand"
-	"github.com/lentus/wotscoin/lib/xnyss/wotsp256/testdata"
+	"github.com/Re0h/xnyss/wotsp256/testdata"
 )
 
 func TestAll(t *testing.T) {
