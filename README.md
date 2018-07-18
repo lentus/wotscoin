@@ -60,6 +60,8 @@ regular secp256k1-based addresses.'
     * **script.go** Add XNYSS multisig script verification
 * **lib/xnyss/** 
     * New files, contains XNYSS source code
+* **client/usif/textui/**
+    * **command.go** Add command for confirmation of given public key hashes
 
 
 ## UPKH DB and Block Verification
@@ -75,8 +77,6 @@ accepted.
 * **lib/utxo/**
     * **unspent_db.go** Add UPKH handling, add UPKH entries to BlockChanges struct  
     * **upkh_rec** New file, specifies UPKH record
-* **client/usif/textui/**
-    * **command.go** Add command for confirmation of given public key hashes
     
 ###The following is the original Gocoin README.
 
