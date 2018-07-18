@@ -242,7 +242,6 @@ func dump_addrs() {
 
 	for i := range msAddresses {
 		var pubaddr string
-		// TODO remove segwit code?
 		if *segwit_mode {
 			if segwit[i] == nil {
 				pubaddr = "-=CompressedKey=-"

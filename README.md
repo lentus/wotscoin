@@ -1,14 +1,84 @@
 # Wotscoin
-TODO
+This repository contains the code accompanying my master thesis (*"Post-quantum 
+blockchain using one-time signature chains"*) which describes the new post-quantum 
+signature scheme XNYSS, designed specifically for use in blockchain technology. 
+Wotscoin is a fork of [**Gocoin**](https://github.com/piotrnar/gocoin "Gocoin github page") with support for XNYSS-based addresses. 
+The purpose of this code is to show how post-quantum security can be added to 
+existing bitcoin implementations by using XNYSS. A standalone version of XNYSS 
+is available [here](https://github.com/lentus/xnyss "XNYSS github page"). 
+
+While the thesis describes the use of segregated witness, this was not implemented 
+because of time restrictions. 
+
+## Usage
+The wallet and client can be build as described below. The wallet can be used to 
+create XNYSS-based addresses (using the normal `wallet -l` command) and sign 
+transactions for those addresses (using the normal `wallet -send` command). By 
+default the wallet creates one-time addresses: to create long-term ones, uncomment 
+the line `longterm=true` in the file *wallet.cfg*. 
+
+When using long-term addresses, you can create a number of signatures right away, 
+but after creating a few you need to confirm they have been adopted into the 
+blockchain using a client (when attempting to sign you will get an error which 
+says that no signature nodes are available). This is done as follows:
+
+* Execute `wallet -unconfirmed` to obtain a file called *unconfirmed.txt*
+* Move *unconfirmed.txt* to a client machine
+* In the client text ui, execute `confirm /path/to/unconfirmed.txt`
+* Move the resulting `confirmed.txt` created by the client back to the wallet
+* Execute `wallet -confirm /path/to/confirmed.txt`
+
+To see how many signatures can currently be created, execute `wallet -keystate`.
+
+Finally, you can create backups of the XNYSS wallet key state using the command 
+`wallet -backup`. **IMPORTANT** Using the backup command is the **ONLY** way to securely 
+create a backup of your XNYSS wallet: restoring a full system backup can result in 
+reuse of W-OTS+ private keys, which may allow an attacker to forge a signature and 
+thus steal funds.
 
 ## XNYSS and Scripts
-TODO
+For reasons described in the thesis, XNYSS is used in combination with bitcoin's
+multisig scripts. The wallet provided in this repository can only be used for the new 
+XNYSS-based addresses: use the original Gocoin wallet to create and sign with 
+regular secp256k1-based addresses.'
 
-## UPKH DB
-TODO
+**Changed files**
+* **wallet/**
+    * **main.go** Added command-line options 
+    * **wallet.go** Changed wallet creation and printing, added confirmation and backup functionality 
+    * **signtx.go** Changed signing to use XNYSS multisig
+    * **decode.go** Changed tx dump output
+    * **config.go** Added configuration options
+* **lib/btc/** 
+    * **const.go** Increased max script element size to be able to push XNYSS signatures
+    * **funcs.go** Add CHECKXNYSSMULTISIG opcode to sigop count
+    * **multisig.go** Add code to create and parse XNYSS multisigs
+    * **opcodes.go** Add CHECKXNYSSMULTISIG opcode (replacing OP_NOP1)
+    * **script.go** Add CHECKXNYSSMULTISIG opcode to ScriptToText
+    * **wallet.go** Create XNYSS-based private address in NewPrivateAddr
+* **lib/script/**
+    * **script.go** Add XNYSS multisig script verification
+* **lib/xnyss/** 
+    * New files, contains XNYSS source code
 
-## Block Verification
-TODO
+
+## UPKH DB and Block Verification
+A new record type was added to the UTXO database, being Unused Public Key Hash 
+(UPKH) records. This database is kept to allow quick verification of signatures 
+created for long-term XNYSS addresses (see the thesis for more details). These 
+records are queried during script verification, and updated when a new block is 
+accepted.
+
+**Changed files**
+* **lib/chain/**
+    * **chain_accept.go** Record UPKH db changes (add new ones, remove used ones, create undo data)
+* **lib/utxo/**
+    * **unspent_db.go** Add UPKH handling, add UPKH entries to BlockChanges struct  
+    * **upkh_rec** New file, specifies UPKH record
+* **client/usif/textui/**
+    * **command.go** Add command for confirmation of given public key hashes
+    
+###The following is the original Gocoin README.
 
 # About Gocoin
 
