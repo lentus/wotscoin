@@ -1,6 +1,6 @@
 # Wotscoin
-This repository contains the code accompanying my master thesis (*"Post-quantum 
-blockchain using one-time signature chains"*) which describes the new post-quantum 
+This repository contains the code accompanying my master thesis ["Post-quantum 
+blockchain using one-time signature chains"](https://www.ru.nl/publish/pages/769526/wouter_van_der_linde.pdf) which describes the new post-quantum 
 signature scheme XNYSS, designed specifically for use in blockchain technology. 
 Wotscoin is a fork of [**Gocoin**](https://github.com/piotrnar/gocoin "Gocoin github page") with support for XNYSS-based addresses. 
 The purpose of this code is to show how post-quantum security can be added to 
